@@ -3,9 +3,12 @@ class profile::common (
     $services         = undef,
     $ssh_keys         = undef,
 ) {
+    include extrarepos
+
     package { $packages:
         ensure => 'installed',
         provider => 'yum',
+        require => Class['Extrarepos'],
     }
 
     if $services != undef {
@@ -15,4 +18,6 @@ class profile::common (
     if $ssh_keys != undef {
         create_resources(ssh_authorized_key, $ssh_keys)
     }
+
+    include generalenv
 }

@@ -1,0 +1,9 @@
+export PS1="\[\033[01;37m\]\u@\h\[\033[01;32m\] \w \$\[\033[00m\] "
+
+export CLICOLOR=1
+
+shopt -s histappend
+
+alias ls='ls -a --color'
+alias ll='ls -ahl --color'
+alias rm='rm -i'

@@ -1,0 +1,41 @@
+<% if @env_vars != nil and @env_vars.length > 0 -%> 
+<% ps1_found = false -%>
+<% @env_vars.each do |env_var| -%>
+<% env_var.each do |k, value| -%>
+<% if k.upcase == "PS1" -%>
+<% ps1_found = true -%>
+<% end -%>
+export <%= k.upcase %>=<%= value %>
+<% end -%>
+<% end -%>
+<% if ps1_found == false -%>
+<% if @user != 'root' -%>
+export PS1="\[\033[01;37m\]\u@\h\[\033[01;32m\] \w \$\[\033[00m\] "
+<% else -%>
+export PS1="\[\033[01;31m\]$(hostname)\[\033[01;32m\] \w $\[\033[00m\] "
+<% end -%>
+<% end -%>
+<% else -%>
+<% if @user != 'root' -%>
+export PS1="\[\033[01;37m\]\u@\h\[\033[01;32m\] \w \$\[\033[00m\] "
+<% else -%>
+export PS1="\[\033[01;31m\]$(hostname)\[\033[01;32m\] \w $\[\033[00m\] "
+<% end -%>
+export CLICOLOR=1
+<% end -%>
+
+shopt -s histappend
+<% if @shopts != nil and @shopts.length > 0 -%>
+<% @shopts.each do |v| -%>
+shopt <%= v %>
+<% end -%>
+
+<% end -%>
+alias ls='ls -a --color'
+alias ll='ls -ahl --color'
+alias rm='rm -i'
+<% if @aliases != nil and @aliases.length > 0 -%>
+<% @aliases.each do |k,v| -%>
+alias <%= k %>='<%= v %>'
+<% end -%>
+<% end -%>
