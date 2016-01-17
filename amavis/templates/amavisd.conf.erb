@@ -13,13 +13,13 @@ use strict;
 # @bypass_spam_checks_maps  = (1);  # controls running of anti-spam code
 # $bypass_decode_parts = 1;         # controls running of decoders&dearchivers
 
-$max_servers = 2;            # num of pre-forked children (2..30 is common), -m
-$daemon_user  = 'amavis';    # (no default;  customary: vscan or amavis), -u
-$daemon_group = 'amavis';    # (no default;  customary: vscan or amavis), -g
+$max_servers = <%= @max_servers %>;            # num of pre-forked children (2..30 is common), -m
+$daemon_user  = '<%= @daemon_user %>';    # (no default;  customary: vscan or amavis), -u
+$daemon_group = '<%= @daemon_group %>';    # (no default;  customary: vscan or amavis), -g
 
-$mydomain = 'brundage.me';   # a convenient default for other settings
+$mydomain = '<%= @mydomain %>';   # a convenient default for other settings
 
-$MYHOME = '/var/spool/amavisd';   # a convenient default for other settings, -H
+$MYHOME = '<%= @myhome %>';   # a convenient default for other settings, -H
 $TEMPBASE = "$MYHOME/tmp";   # working directory, needs to exist, -T
 $ENV{TMPDIR} = $TEMPBASE;    # environment variable TMPDIR, used by SA, etc.
 $QUARANTINEDIR = undef;      # -Q
@@ -31,48 +31,60 @@ $QUARANTINEDIR = undef;      # -Q
 
 $db_home   = "$MYHOME/db";        # dir for bdb nanny/cache/snmp databases, -D
 # $helpers_home = "$MYHOME/var";  # working directory for SpamAssassin, -S
-$lock_file = "/var/run/amavisd/amavisd.lock";  # -L
-$pid_file  = "/var/run/amavisd/amavisd.pid";   # -P
+$lock_file = "<%= @lock_file %>";  # -L
+$pid_file  = "<%= @pid_file %>";   # -P
 #NOTE: create directories $MYHOME/tmp, $MYHOME/var, $MYHOME/db manually
 
-$log_level = 0;              # verbosity 0..5, -d
+$log_level = <%= @log_level %>;              # verbosity 0..5, -d
 $log_recip_templ = undef;    # disable by-recipient level-0 log entries
+<% if @syslog == true or @syslog == nil -%>
 $do_syslog = 1;              # log via syslogd (preferred)
-$syslog_facility = 'mail';   # Syslog facility as a string
+$syslog_facility = '<%= @syslog_facility %>';   # Syslog facility as a string
            # e.g.: mail, daemon, user, local0, ... local7
+<% else -%>
+$do_syslog = 0;
+<% end -%>
 
 $enable_db = 1;              # enable use of BerkeleyDB/libdb (SNMP and nanny)
 # $enable_zmq = 1;           # enable use of ZeroMQ (SNMP and nanny)
 $nanny_details_level = 2;    # nanny verbosity: 1: traditional, 2: detailed
-$enable_dkim_verification = 1;  # enable DKIM signatures verification
+$enable_dkim_verification = <%= @enable_dkim_verification %>;  # enable DKIM signatures verification
+<% if @dkim_signing == true -%>
 $enable_dkim_signing = 1;    # load DKIM signing code, keys defined by dkim_key
 
-dkim_key('pairtechit.com', 'default', '/var/db/dkim/pairtechit.com.key');
-dkim_key('karmacapitalinc.com', 'default', '/var/db/dkim/karmacapitalinc.com.key');
-dkim_key('brundage.me', 'default', '/var/db/dkim/brundage.me.key');
-dkim_key('myampaccount.com', 'myamp', '/var/db/dkim/myampaccount.key.pem');
-dkim_key('ampaccount.com','amp','/var/db/dkim/ampaccount.key.pem');
+<% dkim_path = '/var/db/dkim' -%>
+<% @dkim_keys.each do |k, dkim_key| -%>
+dkim_key('<%= dkim_key['domain'] %>', '<%= dkim_key['selector'] %>', '<%= dkim_path + '/' + dkim_key['key_file'] %>');
+<% end -%>
+
+#dkim_key('karmacapitalinc.com', 'default', '/var/db/dkim/karmacapitalinc.com.key');
+#dkim_key('brundage.me', 'default', '/var/db/dkim/brundage.me.key');
+#dkim_key('myampaccount.com', 'myamp', '/var/db/dkim/myampaccount.key.pem');
+#dkim_key('ampaccount.com','amp','/var/db/dkim/ampaccount.key.pem');
+
 @dkim_signature_options_bysender_maps = (
     { '.' => { ttl => 21*24*3600, c => 'relaxed/simple' } } );
+<% end -%>
 
 @local_domains_maps = ( [".$mydomain"] );  # list of all local domains
 
-@mynetworks = qw( 127.0.0.0/8 [::1] [FE80::]/10 [FEC0::]/10
-                  10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 );
+@mynetworks = qw( <%= @mynetworks.join(" ") %> );
 
 $unix_socketname = "$MYHOME/amavisd.sock";  # amavisd-release or amavis-milter
                # option(s) -p overrides $inet_socket_port and $unix_socketname
 
 #$inet_socket_port = 10024;   # listen on this local TCP port(s)
-$inet_socket_port = [10024,10026];  # listen on multiple TCP ports
+$inet_socket_port = [<%= @inet_socket_ports.join"," %>];  # listen on multiple TCP ports
 
 $policy_bank{'MYNETS'} = {   # mail originating from @mynetworks
   originating => 1,  # is true in MYNETS by default, but let's make it explicit
   os_fingerprint_method => undef,  # don't query p0f for internal clients
 };
 
+<% if @dkim_signing == true -%>
 $interface_policy{'10024'} = 'DKIM_ALWAYS';
 $policy_bank{'DKIM_ALWAYS'} = { originating => 1, };
+<% end -%>
 
 # it is up to MTA to re-route mail from authenticated roaming users or
 # from internal hosts to a dedicated TCP port (such as 10026) for filtering
@@ -128,7 +140,7 @@ $virus_admin               = undef;                    # notifications recip.
 
 $mailfrom_notify_admin     = undef;                    # notifications sender
 $mailfrom_notify_recip     = undef;                    # notifications sender
-$mailfrom_notify_spamadmin = "postmaster\@pairtechit.com";                    # notifications sender
+$mailfrom_notify_spamadmin = "<%= @postmaster %>";                    # notifications sender
 $mailfrom_to_quarantine = ''; # null return path; uses original sender if undef
 
 @addr_extension_virus_maps      = ('virus');
@@ -158,16 +170,16 @@ $defang_by_ccat{CC_BADH.",6"} = 1;  # header field syntax error
 # OTHER MORE COMMON SETTINGS (defaults may suffice):
 
 # $myhostname = 'host.example.com';  # must be a fully-qualified domain name!
-
-chomp($myhostname = `hostname --fqdn`);
+<% myhostname = @hostname + "." + @domain -%>
+chomp($myhostname = '<%= myhostname %>');
 
  $notify_method  = 'smtp:[127.0.0.1]:10025';
 # $forward_method = 'smtp:[127.0.0.1]:10025';  # set to undef with milter!
 
-$final_virus_destiny      = D_DISCARD;
-$final_banned_destiny     = D_BOUNCE;
-$final_spam_destiny       = D_BOUNCE;  #!!!  D_DISCARD / D_REJECT
-$final_bad_header_destiny = D_DISCARD;
+$final_virus_destiny      = <%= @final_virus_destiny %>;
+$final_banned_destiny     = <%= @final_banned_destiny %>;
+$final_spam_destiny       = <%= @final_spam_destiny %>;  #!!!  D_DISCARD / D_REJECT
+$final_bad_header_destiny = <%= @final_bad_header_destiny %>;
 # $bad_header_quarantine_method = undef;
 
 # $os_fingerprint_method = 'p0f:*:2345';  # to query p0f-analyzer.pl
@@ -389,10 +401,12 @@ $banned_filename_re = new_RE(
 # settings for the SAVAPI3.conf: ArchiveScan=1, HeurLevel=2, MailboxScan=1
 
   ### http://www.clamav.net/
+  <% if @clamv == true -%>
   ['ClamAV-clamd',
     \&ask_daemon, ["CONTSCAN {}\n", "/var/spool/amavisd/clamd.sock"],
     qr/\bOK$/m, qr/\bFOUND$/m,
     qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
+  <% end -%>
   # NOTE: run clamd under the same user as amavisd - or run it under its own
   #   uid such as clamav, add user clamav to the amavis group, and then add
   #   AllowSupplementaryGroups to clamd.conf;

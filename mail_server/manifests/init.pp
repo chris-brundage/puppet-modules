@@ -4,6 +4,7 @@ class mail_server (
     $db_name,
     $db_host
 ) {
+    include amavis
     include postfix::server
 
     file { '/etc/postfix/regex':
