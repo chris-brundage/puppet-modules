@@ -1,8 +1,18 @@
 class profile::common ( 
-    $packages         = undef,
-    $services         = undef,
-    $ssh_keys         = undef,
+    $packages           = undef,
+    $services           = undef,
+    $ssh_keys           = undef,
+    $users              = undef,
+    $ssl_certificates    = undef,
 ) {
+    if $users != undef {
+        create_resources(user, $users)
+    }
+
+    if $ssl_certificates != undef {
+        create_resources(sslconfig::install, $ssl_certificates)
+    }
+
     include extrarepos
 
     package { $packages:

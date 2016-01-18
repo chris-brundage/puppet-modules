@@ -129,5 +129,8 @@ dovecot   unix  -       n       n       -       -       pipe
   flags=DRhu user=vmail:vmail argv=<%= @dovecot_directory %>/deliver -f ${sender} -d <%= @dovecot_destination %>
 <% end -%>
 <% @master_services.each do |service| -%>
-<%= service %>
+<%= service['line'] %>
+<% service['options'].each do |option| -%>
+   <%= option %>
+<% end -%>
 <% end -%>

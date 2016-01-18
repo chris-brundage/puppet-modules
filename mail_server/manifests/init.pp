@@ -5,7 +5,23 @@ class mail_server (
     $db_host
 ) {
     include amavis
+    include dovecot
     include postfix::server
+
+    group { 'vmail':
+       gid => 5000,
+       ensure => 'present',
+    }
+
+    user { 'vmail':
+        uid => 5000,
+        ensure => 'present',
+        home => '/var/vmail',
+        managehome => true,
+        shell => '/bin/sh',
+        require => Group['vmail'],
+        before => Class['dovecot'],
+    }
 
     file { '/etc/postfix/regex':
         ensure => directory,
@@ -42,5 +58,22 @@ class mail_server (
         $options = { require => File['/etc/postfix/sql'] }
 
         create_resources(mail_server::sql_cf, $sql_cf_files, $options)
+    }
+
+    file { '/etc/dovecot/sieve':
+        ensure => directory, 
+        owner => 'root',
+        group => 'dovecot',
+        mode => '0750',
+        require => Class['Dovecot'],
+    }
+
+    file { '/etc/dovecot/sieve/globalsieverc':
+        ensure => present,
+        owner => 'root',
+        group => 'dovecot',
+        mode => '0640',
+        content => file('mail_server/globalsieverc'),
+        require => File['/etc/dovecot/sieve'],
     }
 }
