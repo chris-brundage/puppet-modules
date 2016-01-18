@@ -4,6 +4,3 @@
 [submodule "stdlib"]
 	path = stdlib
 	url = git@github.com:puppetlabs/puppetlabs-stdlib.git
-[submodule "dovecot"]
-	path = dovecot
-	url = git@github.com:mxhero/puppet-dovecot.git
