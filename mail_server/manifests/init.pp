@@ -8,6 +8,10 @@ class mail_server (
     include dovecot
     include postfix::server
 
+    package { 'spamassassin':
+        ensure => 'present',
+    }
+
     group { 'vmail':
        gid => 5000,
        ensure => 'present',

@@ -24,7 +24,7 @@ submission inet n       -       n       -       -       smtpd
 <% @smtp_content_filter.each do |content_filter| -%>
   -o content_filter=<%= content_filter %>
 <% end -%>
-  -o syslog_name-postfix/submission
+  -o syslog_name=postfix/submission
   -o smtpd_tls_auth_only=no
   -o smtpd_sasl_auth_enable=<%= @submission_smtpd_sasl_auth_enable %>
   -o smtpd_client_restrictions=<%= @submission_smtpd_client_restrictions %>

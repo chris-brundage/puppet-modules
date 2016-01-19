@@ -22,6 +22,14 @@ class generalenv(
     content => file("generalenv/vimrc.conf"),
   }
 
+  file { "/etc/screenrc":
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    mode => '0644',
+    content => file("generalenv/screenrc"),
+  }
+
   file { "/etc/skel/.bashrc":
     ensure => file,
     owner => 'root',
