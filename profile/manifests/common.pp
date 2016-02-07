@@ -1,5 +1,6 @@
 class profile::common ( 
     $packages           = undef,
+    $packages_hash      = undef,
     $services           = undef,
     $crons              = undef,
     $users              = undef,
@@ -23,6 +24,12 @@ class profile::common (
         ensure => 'installed',
         provider => 'yum',
         require => Class['Extrarepos'],
+    }
+
+    if $packages_hash != undef {
+        $packages_options = { require => Class['Extrarepos'], }
+
+        create_resources(package, $packages_hash, $packages_options)
     }
 
     if $services != undef {
