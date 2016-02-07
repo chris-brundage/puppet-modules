@@ -2,7 +2,6 @@ class profile::common (
     $packages           = undef,
     $services           = undef,
     $crons              = undef,
-    $ssh_keys           = undef,
     $users              = undef,
     $ssl_certificates   = undef,
 ) {
@@ -28,10 +27,6 @@ class profile::common (
 
     if $services != undef {
         create_resources(service, $services)
-    }
-
-    if $ssh_keys != undef {
-        create_resources(ssh_authorized_key, $ssh_keys)
     }
 
     include generalenv
