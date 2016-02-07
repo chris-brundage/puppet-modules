@@ -12,7 +12,7 @@ export <%= k.upcase %>=<%= value %>
 <% if @user != 'root' -%>
 export PS1="\[\033[01;37m\]\u@\h\[\033[01;32m\] \w \$\[\033[00m\] "
 <% else -%>
-export PS1="\[\033[01;31m\]$(hostname)\[\033[01;32m\] \w $\[\033[00m\] "
+export PS1="\[\033[01;31m\]new-$(hostname)\[\033[01;32m\] \w $\[\033[00m\] "
 <% end -%>
 <% end -%>
 <% else -%>

@@ -1,9 +1,10 @@
 class profile::common ( 
     $packages           = undef,
     $services           = undef,
+    $crons              = undef,
     $ssh_keys           = undef,
     $users              = undef,
-    $ssl_certificates    = undef,
+    $ssl_certificates   = undef,
 ) {
     if $users != undef {
         create_resources(user, $users)
@@ -11,6 +12,10 @@ class profile::common (
 
     if $ssl_certificates != undef {
         create_resources(sslconfig::install, $ssl_certificates)
+    }
+
+    if $crons != undef {
+        create_resources(cron, $crons)
     }
 
     include extrarepos
