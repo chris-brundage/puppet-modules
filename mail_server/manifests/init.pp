@@ -4,6 +4,13 @@ class mail_server (
     $db_name,
     $db_host
 ) {
+    file { '/etc/skel/mail':
+        owner => 'root',
+        group => 'root',
+        mode => '0700',
+        ensure => directory,
+    }
+
     include amavis
     include dovecot
     include postfix::server
