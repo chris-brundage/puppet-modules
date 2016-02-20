@@ -1,0 +1,20 @@
+##
+## Plugin settings
+##
+
+# All wanted plugins must be listed in mail_plugins setting before any of the
+# settings take effect. See <doc/wiki/Plugins.txt> for list of plugins and
+# their configuration. Note that %variable expansion is done for all values.
+
+plugin {
+  #setting_name = value
+<% if @fts -%>
+  fts = <%= @fts.join(' ') %>
+<% if @fts.include? 'squat' -%>
+  fts_squat = partial=4 full=10
+<% end -%>
+<% if @fts.include? 'lucene' -%>
+  fts_lucene = whitespace_chars=@.
+<% end -%>
+<% end -%>
+}
