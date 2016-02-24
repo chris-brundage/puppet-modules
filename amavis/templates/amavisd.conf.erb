@@ -401,9 +401,9 @@ $banned_filename_re = new_RE(
 # settings for the SAVAPI3.conf: ArchiveScan=1, HeurLevel=2, MailboxScan=1
 
   ### http://www.clamav.net/
-  <% if @clamv == true -%>
+  <% if @clamav == true -%>
   ['ClamAV-clamd',
-    \&ask_daemon, ["CONTSCAN {}\n", "/var/spool/amavisd/clamd.sock"],
+    \&ask_daemon, ["CONTSCAN {}\n", "/var/run/clamd.amavisd/clamd.sock"],
     qr/\bOK$/m, qr/\bFOUND$/m,
     qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
   <% end -%>
