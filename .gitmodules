@@ -4,9 +4,6 @@
 [submodule "stdlib"]
 	path = stdlib
 	url = git@github.com:puppetlabs/puppetlabs-stdlib.git
-[submodule "fail2ban"]
-	path = fail2ban
-	url = git@github.com:valentinroca/puppet-fail2ban.git
 [submodule "staging"]
 	path = staging
 	url = https://github.com/nanliu/puppet-staging.git
