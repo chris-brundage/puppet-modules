@@ -7,3 +7,6 @@
 [submodule "staging"]
 	path = staging
 	url = https://github.com/nanliu/puppet-staging.git
+[submodule "fail2ban"]
+	path = fail2ban
+	url = git@github.com:chris-brundage/puppet-fail2ban.git
