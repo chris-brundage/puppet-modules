@@ -54,7 +54,9 @@ $enable_dkim_signing = 1;    # load DKIM signing code, keys defined by dkim_key
 
 <% dkim_path = '/var/db/dkim' -%>
 <% @dkim_keys.each do |k, dkim_key| -%>
+<% if dkim_key.key?('ensure') == false or dkim_key['ensure'] != 'absent' -%>
 dkim_key('<%= dkim_key['domain'] %>', '<%= dkim_key['selector'] %>', '<%= dkim_path + '/' + dkim_key['key_file'] %>');
+<% end -%>
 <% end -%>
 
 #dkim_key('karmacapitalinc.com', 'default', '/var/db/dkim/karmacapitalinc.com.key');
