@@ -78,7 +78,7 @@ define phpfpm::pool (
 
   if $pool_error_log != undef {
     file { $pool_error_log:
-      ensure => file,
+      ensure => $ensure,
       owner => $user,
       group => $group,
       mode => '0640',
@@ -89,7 +89,7 @@ define phpfpm::pool (
 
   if $slowlog != undef {
     file { $slowlog:
-      ensure => file,
+      ensure => $ensure,
       owner => $user,
       group => $group,
       mode => '0640',
