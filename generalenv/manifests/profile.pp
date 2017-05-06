@@ -1,8 +1,9 @@
 define generalenv::profile(
   $ensure           = 'present',
   $env_values       = {},
+  $profile_dir      = '/etc/profile.d',
 ) {
-  file { "/etc/profile.d/${name}.sh":
+  file { "${profile_dir}/${name}.sh":
     ensure => $ensure,
     owner => 'root',
     group => 'root',
