@@ -1,0 +1,10 @@
+<% if @env_values != nil and @env_values.length > 0 -%>
+<% @env_values.each do |k, v| -%>
+<% k = k.upcase -%>
+<% if k == 'PATH' -%>
+export PATH="${PATH}:<%= v %>"
+<% else -%>
+export <%= k %>="<%= v %>"
+<% end -%>
+<% end -%>
+<% end -%>

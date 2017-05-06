@@ -1,17 +1,23 @@
 class generalenv(
   $skel_dir                 = $generalenv::params::skel_dir,
-  $user_env_config_file     = $generalenv::params::user_env_config_file,
+  $use_default_profile      = false,
   $profile_dir              = $generalenv::params::profile_dir,
-  $user_env_file            = $generalenv::params::user_env_file,
+  $profiles                 = undef,
 ) inherits generalenv::params {
-  $user_env = "${profile_dir}/${user_env_file}"  
+  if $use_default_profile {
+    $default_profile = "${profile_dir}/default_profile.sh"
 
-  file { $user_env:
-    ensure => file,
-    owner => 0,
-    group => 0,
-    mode => '0644',
-    content => file($user_env_config_file),
+    file { $default_profile:
+      ensure => file,
+      owner => 'root',
+      group => 'root',
+      mode => '0644',
+      content => file('generalenv/default_profile.sh'),
+    }
+  }
+
+  if $profiles != undef {
+    create_resources(generalenv::profile, $profiles)
   }
   
   file { "/root/.vimrc":
@@ -45,4 +51,5 @@ class generalenv(
   } else {
     create_resources(generalenv::bashrc, $bashrcs)
   }
+
 }

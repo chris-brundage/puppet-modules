@@ -1,6 +1,6 @@
 class generalenv::params {
   $skel_dir = "/etc/skel"
-  $user_env_config_file = "generalenv/user_env.sh.conf"
+  $user_env_config_file = "generalenv/default_profile.sh"
 	
   if($operatingsystem == "CentOS") { 
     $profile_dir = "/etc/profile.d"
