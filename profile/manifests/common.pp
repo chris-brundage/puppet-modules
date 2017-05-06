@@ -1,10 +1,11 @@
 class profile::common ( 
-    $packages           = undef,
-    $packages_hash      = undef,
-    $services           = undef,
-    $crons              = undef,
-    $users              = undef,
-    $ssl_certificates   = undef,
+    $packages                       = undef,
+    $packages_hash                  = undef,
+    $services                       = undef,
+    $crons                          = undef,
+    $users                          = undef,
+    $ssl_certificates               = undef,
+    $letsencrypt_certificates       = undef,
 ) {
     if $users != undef {
         create_resources(user, $users)
@@ -37,4 +38,14 @@ class profile::common (
     }
 
     include generalenv
+
+    if $letsencrypt_certificates != undef {
+        include letsencrypt
+
+        $letsencrypt_options = {
+            require => Class['Extrarepos']
+        }
+
+        create_resources(letsencrypt::certonly, $letsencrypt_certificates, $letsencrypt_options)
+    }
 }
