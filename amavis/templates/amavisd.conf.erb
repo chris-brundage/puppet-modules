@@ -59,11 +59,6 @@ dkim_key('<%= dkim_key['domain'] %>', '<%= dkim_key['selector'] %>', '<%= dkim_p
 <% end -%>
 <% end -%>
 
-#dkim_key('karmacapitalinc.com', 'default', '/var/db/dkim/karmacapitalinc.com.key');
-#dkim_key('brundage.me', 'default', '/var/db/dkim/brundage.me.key');
-#dkim_key('myampaccount.com', 'myamp', '/var/db/dkim/myampaccount.key.pem');
-#dkim_key('ampaccount.com','amp','/var/db/dkim/ampaccount.key.pem');
-
 @dkim_signature_options_bysender_maps = (
     { '.' => { ttl => 21*24*3600, c => 'relaxed/simple' } } );
 <% end -%>
